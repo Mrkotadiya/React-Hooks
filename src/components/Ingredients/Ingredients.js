@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback} from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -24,7 +24,15 @@ const Ingredients = () => {
       setUserIngredients(loadedIngredients);
     }) ;
   },[])
-    /*End loading data */
+  
+
+  useEffect(()=>{
+    console.log('RENDERING INGREDIENTS',userIngredients);
+  },[userIngredients])
+
+  const filterIngredientsHandler= useCallback(filterIngredients =>{
+    setUserIngredients(filterIngredients);
+  },[]);
 
   /* fetching data*/  
   const addIngredientHandler = (ingredient) => {
@@ -52,7 +60,7 @@ const Ingredients = () => {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filterIngredientsHandler}/>
         <IngredientList ingredients={userIngredients} onRemoveItem={() => {}} />
 
         {/* Need to add list here! */}
