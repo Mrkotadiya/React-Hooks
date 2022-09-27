@@ -1,0 +1,17 @@
+[33mcommit 0a87d3d5e8f2d596e5d6e513e748ca5c18d07cf0[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: nirbhay <nirbhayk7281@gmail.com>
+Date:   Tue Sep 27 12:02:59 2022 +0530
+
+    add firebase and fetch data
+
+[33mcommit be99c3eb1d3b9e2e1f892dd8598551f0ac343d02[m
+Author: nirbhay <nirbhayk7281@gmail.com>
+Date:   Mon Sep 26 17:00:20 2022 +0530
+
+    passing state data across components
+
+[33mcommit ef7428de532c1c1728bfc18ed81bedd02cfd22c4[m
+Author: nirbhay <nirbhayk7281@gmail.com>
+Date:   Mon Sep 26 14:30:56 2022 +0530
+
+    State Updating & array destructuring
