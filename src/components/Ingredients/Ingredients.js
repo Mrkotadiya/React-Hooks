@@ -32,7 +32,7 @@ const Ingredients = () => {
 
   const filterIngredientsHandler= useCallback(filterIngredients =>{
     setUserIngredients(filterIngredients);
-  },[]);
+  },[setUserIngredients]);
 
   /* fetching data*/  
   const addIngredientHandler = (ingredient) => {
