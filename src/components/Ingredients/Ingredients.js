@@ -1,4 +1,4 @@
-import React, { useState,useReducer, useEffect, useCallback } from "react";
+import React, {  useReducer, useEffect, useCallback } from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -18,27 +18,43 @@ const ingredientReducer = (currentIngredient, action) => {
   }
 };
 
+const httpReducer  = (curHttpState, action) => {
+  switch (action.type) {
+    case "SEND":
+      return { loading: true, error: null };
+    case "RESPONSE":
+      return { ...curHttpState, loading: false };
+    case "ERROR":
+      return { loading: false, error: action.errorMessage };
+    case 'CLEAR':
+      return { ...curHttpState, error: null };
+    default:
+      throw new Error("Should not be  reached!");
+  }
+};
+
 const Ingredients = () => {
-  const [userIngredients,dispatch]= useReducer(ingredientReducer,[])
+  const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
+  const [httpState,dispatchHttp] = useReducer(httpReducer, {
+     loading: false, 
+     error: null 
+    });
   // const [userIngredients, setUserIngredients] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-
-
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState();
 
   useEffect(() => {
     console.log("RENDERING INGREDIENTS", userIngredients);
   }, [userIngredients]);
 
-  const filterIngredientsHandler = useCallback(
-    (filterIngredients) => {
-      // setUserIngredients(filterIngredients);
-      dispatch({type:'SET',ingredients:filterIngredients});
-    },[]);
+  const filterIngredientsHandler = useCallback((filterIngredients) => {
+    // setUserIngredients(filterIngredients);
+    dispatch({ type: "SET", ingredients: filterIngredients });
+  }, []);
 
   /* fetching data*/
   const addIngredientHandler = (ingredient) => {
-    setIsLoading(true);
+    dispatchHttp({type:'SEND'});
     fetch(
       "https://react-hooks-update-889d9-default-rtdb.firebaseio.com/ingredients.json",
       {
@@ -48,7 +64,7 @@ const Ingredients = () => {
       }
     )
       .then((res) => {
-        setIsLoading(false);
+        dispatchHttp({type:'RESPONSE'});
         return res.json();
       })
       .then((resData) => {
@@ -56,14 +72,16 @@ const Ingredients = () => {
         //   ...prevIngredients,
         //   { id: resData.name, ...ingredient },
         // ]);
-        dispatch({type:'ADD',ingredient:{ id: resData.name, ...ingredient }
-      });
+        dispatch({
+          type: "ADD",
+          ingredient: { id: resData.name, ...ingredient },
+        });
       });
   };
   /*End feching data */
 
   const removeIngredientHandler = (ingredientId) => {
-    setIsLoading(true);
+    dispatchHttp({type:'SEND'});
     fetch(
       `https://react-hooks-update-889d9-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
       {
@@ -71,28 +89,29 @@ const Ingredients = () => {
       }
     )
       .then((res) => {
-        setIsLoading(false);
+        dispatchHttp({type:'RESPONSE'});
         // setUserIngredients((prevIngredients) =>
         //   prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
         // );
-        dispatch({type:"DELETE", id:ingredientId});
+        dispatch({ type: "DELETE", id: ingredientId });
       })
       .catch((error) => {
-        setError("error.message => Somthing went wrong");
-        setIsLoading(false);
+        dispatchHttp({type:'ERROR',errorMessage:"Kuch na kuch to gadbad hee....! "});
+        // setError("error.message => Somthing went wrong");
+        // setIsLoading(false);
       });
   };
 
   const clearError = () => {
-    setError(null);
+    dispatchHttp({type:"CLEAR"})
   };
 
   return (
     <div className="App">
-      {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
+      {httpState.error && <ErrorModal onClose={clearError}>{httpState.error}</ErrorModal>}
       <IngredientForm
         onAddIngredient={addIngredientHandler}
-        loading={isLoading}
+        loading={httpState.loading}
       />
 
       <section>
